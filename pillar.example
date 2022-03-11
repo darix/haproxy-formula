@@ -159,6 +159,29 @@ haproxy:
           port: 6379
           check: check
           extra: port 6379 inter 1s backup
+    patroni:
+      bind:
+        - :25432
+      mode: tcp
+      balance: roundrobin
+      timeouts:
+        - connect 10s
+        - client 3600s
+        - server 3600s
+      servers:
+        # for each node matching the target it will count up the loop index and append that to the server name
+        postgresql:
+          mine_target: 'I@role:patroni-node'
+          mine_functions: 'fqdn'
+          # starting weight
+          mine_max_weight: 90
+          # if this option is false then all nodes get the same weight value from mine_max_weight
+          mine_scale_weight: true
+          # optionally set backup for all nodes with weight < mine_max_weight - only makes sense in combination with enabling mine_scale_weight
+          mine_setbackup: true
+          port: 5432
+          maxconn: 100
+          check: "check port 8008 inter 2000 rise 3 fall 3"
   frontends:
     frontend1:
       name: www-http
