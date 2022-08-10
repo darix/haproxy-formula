@@ -8,7 +8,7 @@ haproxy.config:
     - template: jinja
     - user: {{ haproxy.user }}
     - group: {{ haproxy.group }}
-    - mode: 644
+    - mode: '0644'
     - require_in:
       - service: haproxy.service
     - watch_in:
@@ -25,7 +25,7 @@ haproxy-chroot-directory:
     - name: {{ salt['pillar.get']('haproxy:global:chroot:path') }}
     - user: {{ haproxy.user }}
     - group: {{ haproxy.group }}
-    - dir_mode: 755
+    - dir_mode: '0750'
     - require_in:
       - service: haproxy.service
 {% endif %}
