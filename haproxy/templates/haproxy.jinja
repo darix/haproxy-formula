@@ -426,8 +426,8 @@ frontend {{ frontend.get('name', frontend_name) }}
     maxconn {{ frontend.maxconn }}
     {%- endif %}
     {%- if 'timeouts' in frontend %}
-      {%- for timeout in frontend.timeouts %}
-    timeout {{ timeout }}
+      {%- for timeout_type, timeout_value in frontend.timeouts.items() %}
+    timeout {{ timeout_type }} {{ timeout_value }}
       {%- endfor %}
     {%- endif %}
     {%- if 'options' in frontend %}
@@ -523,8 +523,8 @@ backend {{ backend.get('name', backend_name) }}
     balance {{ backend.balance }}
     {%- endif %}
     {%- if 'timeouts' in backend %}
-      {%- for timeout in backend.timeouts %}
-    timeout {{ timeout }}
+      {%- for timeout_type, timeout_value in backend.timeouts.items() %}
+    timeout {{ timeout_type }} {{ timeout_value }}
       {%- endfor %}
     {%- endif %}
     {%- if 'options' in backend %}
