@@ -60,13 +60,13 @@ haproxy:
     # yamllint disable-line rule:line-length
     logformat: "%ci:%cp\\ [%t]\\ %ft\\ %b/%s\\ %Tq/%Tw/%Tc/%Tr/%Tt\\ %ST\\ %B\\ %CC\\ %CS\\ %tsc\\ %ac/%fc/%bc/%sc/%rc\\ %sq/%bq\\ %hr\\ %hs\\ %{+Q}r"
     timeouts:
-      - http-request    10s
-      - queue           1m
-      - connect         10s
-      - client          1m
-      - server          1m
-      - http-keep-alive 10s
-      - check           10s
+      http-request:    10s
+      queue:           1m
+      connect:         10s
+      client:          1m
+      server:          1m
+      http-keep-alive: 10s
+      check:           10s
     stats:
       - enable
       - uri: '/admin?stats'
