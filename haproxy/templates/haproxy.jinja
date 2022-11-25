@@ -147,8 +147,8 @@ defaults
     maxconn {{ salt['pillar.get']('haproxy:defaults:maxconn') }}
 {%- endif %}
 {%- if 'timeouts' in salt['pillar.get']('haproxy:defaults', {}) %}
-  {%- for timeout in salt['pillar.get']('haproxy:defaults:timeouts') %}
-    timeout {{ timeout }}
+  {%- for timeout_type, timeout_value in salt['pillar.get']('haproxy:defaults:timeouts').items() %}
+    timeout {{ timeout_type }} {{ timeout_value }}
   {%- endfor %}
 {%- else %}
     timeout client  1m
@@ -348,8 +348,8 @@ listen {{ listener.get('name', listener_name) }}
     maxconn {{ listener.maxconn }}
     {%- endif %}
     {%- if 'timeouts' in listener %}
-      {%- for timeout in listener.timeouts %}
-    timeout {{ timeout }}
+      {%- for timeout_type, timeout_value in listener.timeouts.items() %}
+    timeout {{ timeout_type }} {{ timeout_value }}
       {%- endfor %}
     {%- endif %}
     {%- if 'options' in listener %}
