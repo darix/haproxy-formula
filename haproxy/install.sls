@@ -2,7 +2,10 @@
 
 haproxy.install:
   pkg.installed:
-    - name: {{ haproxy.package }}
+    - names:
+      - {{ haproxy.package }}
+      - hatop
+      - monitoring-plugins-haproxy
 {% if salt['pillar.get']('haproxy:require') %}
     - require:
 {% for item in salt['pillar.get']('haproxy:require') %}
