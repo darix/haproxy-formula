@@ -294,6 +294,10 @@ listen {{ listener.get('name', listener_name) }}
     {%- elif 'httpcheck' in listener %}{# deprecated: but for compatibility #}
       {%- if listener.httpcheck is string %}
     http-check {{ listener.httpcheck }}
+      {%- else %}
+        {%- for check_line in listener.httpcheck %}
+    http-check {{ check_line }}
+        {%- endfor %}
       {%- endif %}
     {%- endif %}
     {%- if 'tcpchecks' in listener %}
@@ -589,6 +593,10 @@ backend {{ backend.get('name', backend_name) }}
     {%- elif 'httpcheck' in backend %}{# deprecated: but for compatibility #}
       {%- if backend.httpcheck is string %}
     http-check {{ backend.httpcheck }}
+      {%- else %}
+        {%- for check_line in backend.httpcheck %}
+    http-check {{ check_line }}
+        {%- endfor %}
       {%- endif %}
     {%- endif %}
     {%- if 'redirects' in backend %}
