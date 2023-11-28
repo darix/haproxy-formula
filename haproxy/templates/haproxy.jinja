@@ -149,6 +149,9 @@ defaults
 {%- if 'maxconn' in salt['pillar.get']('haproxy:defaults', {}) %}
     maxconn {{ salt['pillar.get']('haproxy:defaults:maxconn') }}
 {%- endif %}
+{%- if 'http_reuse' in salt['pillar.get']('haproxy:defaults', {}) %}
+    http-reuse {{ salt['pillar.get']('haproxy:defaults:http_reuse') }}
+{%- endif %}
 {%- if 'timeouts' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for timeout_type, timeout_value in salt['pillar.get']('haproxy:defaults:timeouts').items() %}
     timeout {{ timeout_type }} {{ timeout_value }}
@@ -354,6 +357,9 @@ listen {{ listener.get('name', listener_name) }}
     {%- if 'maxconn' in listener %}
     maxconn {{ listener.maxconn }}
     {%- endif %}
+    {%- if 'http_reuse' in listener %}
+    http-reuse {{ listener.http_reuse }}
+    {%- endif %}
     {%- if 'timeouts' in listener %}
       {%- for timeout_type, timeout_value in listener.timeouts.items() %}
     timeout {{ timeout_type }} {{ timeout_value }}
@@ -525,6 +531,9 @@ backend {{ backend.get('name', backend_name) }}
     {%- endif %}
     {%- if 'balance' in backend %}
     balance {{ backend.balance }}
+    {%- endif %}
+    {%- if 'http_reuse' in backend %}
+    http-reuse {{ backend.http_reuse }}
     {%- endif %}
     {%- if 'timeouts' in backend %}
       {%- for timeout_type, timeout_value in backend.timeouts.items() %}
