@@ -371,6 +371,15 @@ listen {{ listener.get('name', listener_name) }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'no_options' in listener %}
+      {%- if listener.no_options is string %}
+    no option {{ listener.no_options }}
+      {%- else %}
+        {%- for option in listener.no_options %}
+    no option {{ option }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endif %}
     {%- if 'cookie' in listener %}
     cookie {{ listener.cookie }}
     {%- endif %}
@@ -439,6 +448,9 @@ frontend {{ frontend.get('name', frontend_name) }}
     {%- endif %}
     {%- if 'options' in frontend %}
     {{- render_list_of_dictionaries('option', frontend.options) }}
+    {%- endif %}
+    {%- if 'no_options' in frontend %}
+    {{- render_list_of_dictionaries('no option', frontend.no_options) }}
     {%- endif %}
     {%- if 'uniqueidformat' in frontend %}
     unique-id-format {{ frontend.uniqueidformat }}
@@ -543,6 +555,15 @@ backend {{ backend.get('name', backend_name) }}
       {%- else %}
         {%- for option in backend.options %}
     option {{ option }}
+        {%- endfor %}
+      {%- endif %}
+    {%- endif %}
+    {%- if 'no_options' in backend %}
+      {%- if backend.no_options is string %}
+    no option {{ backend.no_options }}
+      {%- else %}
+        {%- for option in backend.no_options %}
+    no option {{ option }}
         {%- endfor %}
       {%- endif %}
     {%- endif %}
