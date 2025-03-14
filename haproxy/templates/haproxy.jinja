@@ -408,7 +408,11 @@ listen {{ listener.get('name', listener_name) }}
       {%- endif %}
     {%- endif %}
     {%- if 'defaultserver' in listener %}
+      {%- if listener.defaultserver is string %}
+    default-server {{ listener.defaultserver }}
+      {%- else %}
     default-server {%- for option, value in listener.defaultserver|dictsort %} {{ ' '.join((option, value|string, '')) }} {%- endfor %}
+      {%- endif %}
     {%- endif %}
     {%- if 'servers' in listener %}
       {%- for server_name, server in listener.servers|dictsort %}
