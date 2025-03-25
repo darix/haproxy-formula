@@ -169,10 +169,18 @@ haproxy:
         - :25432
       mode: tcp
       balance: roundrobin
+      options:
+        - tcplog
+        - httpchk
+      httpcheck:
+        - connect default ssl
+        - send meth GET uri / ver HTTP/1.1 hdr Host localhost hdr User-Agent haproxy/patroni-clustercheck hdr Accept */*
+        - expect status 200-399
       timeouts:
         connect: 10s
         client: 3600s
         server: 3600s
+      defaultserver: check maxconn 1000 port 8008 inter 2000 rise 3 fall 3 crt /etc/step/certs/generic.user.full.pem ca-file /usr/share/pki/trust/anchors/step-ca-ibs.crt.pem on-marked-down shutdown-sessions
       servers:
         # for each node matching the target it will count up the loop index and append that to the server name
         postgresql:
@@ -185,8 +193,7 @@ haproxy:
           # optionally set backup for all nodes with weight < mine_max_weight - only makes sense in combination with enabling mine_scale_weight
           mine_setbackup: true
           port: 5432
-          maxconn: 100
-          check: "check port 8008 inter 2000 rise 3 fall 3"
+
   frontends:
     frontend1:
       name: www-http
