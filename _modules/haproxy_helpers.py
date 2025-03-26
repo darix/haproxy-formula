@@ -63,7 +63,7 @@ class ServerEntries:
         mine_target    = server['mine_target']
         mine_functions = server['mine_functions']
 
-        loop_index = 0
+        loop_index = 1
 
         hosts = __salt__['mine.get'](mine_target, mine_functions, tgt_type='compound')
 
