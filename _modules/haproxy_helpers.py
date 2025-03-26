@@ -40,7 +40,7 @@ class ServerEntries:
 
         if 'mine_setbackup' in server and server['mine_setbackup']:
           if not('extra' in server and 'backup' in server['extra']):
-            if weight < server['mine_max_weight']:
+            if weight < server['mine_max_weight'] - 1:
               line_elements.append('backup')
 
     return ' '.join(line_elements)
