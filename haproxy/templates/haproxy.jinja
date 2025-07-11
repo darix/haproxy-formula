@@ -172,7 +172,7 @@ defaults
 {%- endif %}
 
 {%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}) %}
-defaults {{ named_defaults_name }}
+defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %} from {{ named_defaults.inherit_defaults }}{%- endif }
 {%- if 'mode' in named_defaults) %}
     log {{ named_defaults['log'] }}
 {%- endif %}
