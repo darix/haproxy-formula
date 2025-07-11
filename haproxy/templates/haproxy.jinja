@@ -170,11 +170,68 @@ defaults
     {%- endfor %}
   {%- endif %}
 {%- endif %}
+
+{%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}) %}
+defaults {{ named_defaults_name }}
+{%- if 'mode' in named_defaults) %}
+    log {{ named_defaults['log'] }}
+{%- endif %}
+{%- if 'mode' in named_defaults %}
+    mode {{ named_defaults['mode'] }}
+{%- endif %}
+{%- if 'retries' in named_defaults %}
+    retries {{ named_defaults['retries'] }}
+{%- endif %}
+{%- if 'balance' in named_defaults %}
+    balance {{ named_defaults['balance'] }}
+{%- endif %}
+{%- if 'monitoruri' in named_defaults %}
+    monitor-uri {{ named_defaults['monitoruri'] }}
+{%- endif %}
+{%- if 'hashtype' in named_defaults %}
+    hash-type {{ named_defaults['hashtype'] }}
+{%- endif %}
+{%- if 'options' in named_defaults -%}
+    {{- render_list_of_dictionaries('option', named_defaults['options']) }}
+{%- endif %}
+{%- if 'logformat' in named_defaults %}
+    log-format {{ named_defaults['logformat'] }}
+{%- endif %}
+{%- if 'maxconn' in named_defaults %}
+    maxconn {{ named_defaults['maxconn'] }}
+{%- endif %}
+{%- if 'http_reuse' in named_defaults %}
+    http-reuse {{ named_defaults['http_reuse'] }}
+{%- endif %}
+{%- if 'timeouts' in named_defaults %}
+  {%- for timeout_type, timeout_value in named_defaults['timeouts'].items() %}
+    timeout {{ timeout_type }} {{ timeout_value }}
+  {%- endfor %}
+{%- else %}
+    timeout client  1m
+    timeout connect 10s
+    timeout server  1m
+{%- endif %}
+{%- if 'stats' in named_defaults -%}
+    {{ render_list_of_dictionaries('stats', named_defaults['stats']) }}
+{%- endif %}
+{%- if 'extra' in named_defaults %}
+  {%- if named_defaults.get('extra', {}) is string %}
+    {{ named_defaults['extra'] }}
+  {%- else %}
+    {%- for line in named_defaults['extra'] %}
+    {{ line }}
+    {%- endfor %}
+  {%- endif %}
+{%- endif %}
+{%- endfor %}
+
 {%- if 'errorfiles' in salt['pillar.get']('haproxy:defaults', {}) %}
   {%- for errorfile_name, errorfile in salt['pillar.get']('haproxy:defaults:errorfiles')|dictsort %}
     errorfile {{ errorfile_name }} {{ errorfile }}
   {%- endfor %}
 {% endif %}
+
 {%- if salt['pillar.get']('haproxy:resolvers') %}
 
 
@@ -196,7 +253,7 @@ resolvers {{ resolver_name }}
 # listen instances
 #------------------
   {%- for listener_name, listener in salt['pillar.get']('haproxy:listens', {})|dictsort %}
-listen {{ listener.get('name', listener_name) }}
+listen {{ listener.get('name', listener_name) }}{%- if 'inherit_defaults' in listener %} from {{ listener.inherit_defaults }}{%- endif }
     {%- if 'bind' in listener %}
       {%- if listener.bind is string %}
     bind {{ listener.bind }}
@@ -429,7 +486,7 @@ listen {{ listener.get('name', listener_name) }}
 # frontend instances
 #------------------
   {%- for frontend_name, frontend in salt['pillar.get']('haproxy:frontends', {})|dictsort %}
-frontend {{ frontend.get('name', frontend_name) }}
+frontend {{ frontend.get('name', frontend_name) }}{%- if 'inherit_defaults' in frontend %} from {{ frontend.inherit_defaults }}{%- endif }
     {%- if 'bind' in frontend %}
     {{- render_list_of_dictionaries('bind', frontend.bind) }}
     {%- endif %}
@@ -530,7 +587,7 @@ frontend {{ frontend.get('name', frontend_name) }}
 # backend instances
 #------------------
   {%- for backend_name, backend in salt['pillar.get']('haproxy:backends', {})|dictsort %}
-backend {{ backend.get('name', backend_name) }}
+backend {{ backend.get('name', backend_name) }}{%- if 'inherit_defaults' in backend %} from {{ backend.inherit_defaults }}{%- endif }
     {%- if 'mode' in backend %}
     mode {{ backend.mode }}
     {%- endif %}
