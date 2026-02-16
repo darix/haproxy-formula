@@ -173,7 +173,7 @@ defaults
 
 {%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}) %}
 defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %} from {{ named_defaults.inherit_defaults }}{%- endif %}
-{%- if 'mode' in named_defaults) %}
+{%- if 'mode' in named_defaults %}
     log {{ named_defaults['log'] }}
 {%- endif %}
 {%- if 'mode' in named_defaults %}
@@ -253,7 +253,7 @@ resolvers {{ resolver_name }}
 # listen instances
 #------------------
   {%- for listener_name, listener in salt['pillar.get']('haproxy:listens', {})|dictsort %}
-listen {{ listener.get('name', listener_name) }}{%- if 'inherit_defaults' in listener %} from {{ listener.inherit_defaults }}{%- endif }
+listen {{ listener.get('name', listener_name) }}{%- if 'inherit_defaults' in listener %} from {{ listener.inherit_defaults }}{%- endif %}
     {%- if 'bind' in listener %}
       {%- if listener.bind is string %}
     bind {{ listener.bind }}
@@ -486,7 +486,7 @@ listen {{ listener.get('name', listener_name) }}{%- if 'inherit_defaults' in lis
 # frontend instances
 #------------------
   {%- for frontend_name, frontend in salt['pillar.get']('haproxy:frontends', {})|dictsort %}
-frontend {{ frontend.get('name', frontend_name) }}{%- if 'inherit_defaults' in frontend %} from {{ frontend.inherit_defaults }}{%- endif }
+frontend {{ frontend.get('name', frontend_name) }}{%- if 'inherit_defaults' in frontend %} from {{ frontend.inherit_defaults }}{%- endif %}
     {%- if 'bind' in frontend %}
     {{- render_list_of_dictionaries('bind', frontend.bind) }}
     {%- endif %}
@@ -587,7 +587,7 @@ frontend {{ frontend.get('name', frontend_name) }}{%- if 'inherit_defaults' in f
 # backend instances
 #------------------
   {%- for backend_name, backend in salt['pillar.get']('haproxy:backends', {})|dictsort %}
-backend {{ backend.get('name', backend_name) }}{%- if 'inherit_defaults' in backend %} from {{ backend.inherit_defaults }}{%- endif }
+backend {{ backend.get('name', backend_name) }}{%- if 'inherit_defaults' in backend %} from {{ backend.inherit_defaults }}{%- endif %}
     {%- if 'mode' in backend %}
     mode {{ backend.mode }}
     {%- endif %}
