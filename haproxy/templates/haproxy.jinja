@@ -661,6 +661,9 @@ backend {{ backend.get('name', backend_name) }}{%- if 'inherit_defaults' in back
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'httpresponses' in backend %}
+    {{- render_list_of_dictionaries('http-response', backend.httpresponses) }}
+    {%- endif %}
     {%- if 'httprequests' in backend %}
       {%- if backend.httprequests is string %}
     http-request {{ backend.httprequests }}
