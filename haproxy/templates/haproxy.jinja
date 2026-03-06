@@ -340,6 +340,12 @@ listen {{ listener.get('name', listener_name) }}{%- if 'inherit_defaults' in lis
         {%- endfor %}
       {%- endif %}
     {%- endif %}
+    {%- if 'httpresponses' in listener %}
+    {{- render_list_of_dictionaries('http-response', listener.httpresponses) }}
+    {%- endif %}
+    {%- if 'httpafterresponses' in listener %}
+    {{- render_list_of_dictionaries('http-after-response', listener.httpafterresponses) }}
+    {%- endif %}
     {%- if 'httpchecks' in listener %}
       {%- if listener.httpchecks is string %}
     http-check {{ listener.httpchecks }}
@@ -549,6 +555,9 @@ frontend {{ frontend.get('name', frontend_name) }}{%- if 'inherit_defaults' in f
     {%- if 'httpresponses' in frontend %}
     {{- render_list_of_dictionaries('http-response', frontend.httpresponses) }}
     {%- endif %}
+    {%- if 'httpafterresponses' in frontend %}
+    {{- render_list_of_dictionaries('http-after-response', frontend.httpafterresponses) }}
+    {%- endif %}
     {%- if 'rspadds' in frontend %}
     {{- render_list_of_dictionaries('rspadd', frontend.rspadds) }}
     {%- endif %}
@@ -663,6 +672,9 @@ backend {{ backend.get('name', backend_name) }}{%- if 'inherit_defaults' in back
     {%- endif %}
     {%- if 'httpresponses' in backend %}
     {{- render_list_of_dictionaries('http-response', backend.httpresponses) }}
+    {%- endif %}
+    {%- if 'httpafterresponses' in backend %}
+    {{- render_list_of_dictionaries('http-after-response', backend.httpafterresponses) }}
     {%- endif %}
     {%- if 'httprequests' in backend %}
       {%- if backend.httprequests is string %}
