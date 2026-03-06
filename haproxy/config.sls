@@ -29,3 +29,17 @@ haproxy-chroot-directory:
     - require_in:
       - service: haproxy.service
 {% endif %}
+
+{%- for map_name, map_data in salt['pillar.get']("haproxy:maps").items() %}
+haproxy_map_{{ map_name }}:
+  file.managed:
+    - name: /etc/haproxy/{{ map_name }}.map
+    - user: {{ haproxy.user }}
+    - group: {{ haproxy.group }}
+    - mode: '0644'
+    - require_in:
+      - service: haproxy.service
+    - watch_in:
+      - service: haproxy.service
+    - contents_pillar: "haproxy:maps:{{ map_name }}"
+{%- endfor %}
