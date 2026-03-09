@@ -1,7 +1,9 @@
 class ServerEntries:
-  def __init__(self, server_name, server_entry):
+  def __init__(self, server_name, server_entry, parent_block):
     self.server_name = server_name
     self.server_entry = server_entry
+    self.parent_block = parent_block
+    self.needs_ssl = 'ssl' in self.parent_block.get('defaultserver', '') or 'ssl' in self.server_entry.get('extra', '')
 
     self.lines = []
 
@@ -9,7 +11,7 @@ class ServerEntries:
     self.build_lines()
     return self.lines
 
-  def construct_line(self, name, host, loop_index=None):
+  def construct_line(self, name, host, ssl_settings='', loop_index=None):
     server = self.server_entry
     line_elements = []
     line_elements.append('server')
@@ -19,6 +21,9 @@ class ServerEntries:
       line_elements.append('{host}:{port}'.format(host=host, port=server['port']))
     else:
       line_elements.append(host)
+
+    if len(ssl_settings) > 0:
+      line_elements.append(ssl_settings)
 
     if 'maxconn' in server:
       line_elements.append('maxconn {maxconn}'.format(maxconn=server['maxconn']))
@@ -45,9 +50,9 @@ class ServerEntries:
 
     return ' '.join(line_elements)
 
-  def handle_mine_entry(self, address, name, loop_index):
+  def handle_mine_entry(self, address, name, ssl_settings='', loop_index=None):
     minion_name = '{name}{index}'.format(name=name, index=loop_index)
-    line = self.construct_line(minion_name, address, loop_index)
+    line = self.construct_line(minion_name, address, ssl_settings, loop_index)
     self.lines.append(line)
 
   def build_lines(self):
@@ -68,20 +73,22 @@ class ServerEntries:
         hosts = __salt__['mine.get'](mine_target, mine_functions, tgt_type='compound')
 
         for minion_id, entry in self.dictsort(hosts).items():
+          ssl_settings = ''
+          if self.needs_ssl:
+            ssl_settings = f"verifyhost {minion_id} check-sni {minion_id} sni str({minion_id})"
 
           if type(entry) == list:
             for address in entry:
-              self.handle_mine_entry(address, name, loop_index)
+              self.handle_mine_entry(address, name, ssl_settings, loop_index)
               loop_index += 1
-
           else:
-            self.handle_mine_entry(entry, name, loop_index)
+            self.handle_mine_entry(address=entry, name=name, ssl_settings=ssl_settings, loop_index=loop_index)
             loop_index += 1
 
   def dictsort(self, unsorted_dict):
     return dict(sorted(unsorted_dict.items(), key=lambda item: item[0]))
 
-def server_entries(server_name='', server_entry=None):
+def server_entries(server_name='', server_entry=None, parent_block={}):
   lines = []
 
   if not(server_entry):
@@ -96,4 +103,4 @@ def server_entries(server_name='', server_entry=None):
       'extra': "weight 123",
     }
 
-  return ServerEntries(server_name, server_entry).entries()
+  return ServerEntries(server_name, server_entry, parent_block).entries()
