@@ -30,7 +30,7 @@ haproxy-chroot-directory:
       - service: haproxy.service
 {% endif %}
 
-{%- for map_name, map_data in salt['pillar.get']("haproxy:maps").items() %}
+{%- for map_name, map_data in salt['pillar.get']("haproxy:maps", {}).items() %}
 haproxy_map_{{ map_name }}:
   file.managed:
     - name: /etc/haproxy/{{ map_name }}.map
