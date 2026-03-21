@@ -87,6 +87,18 @@ global
 {%- if 'ssl-default-server-ciphersuites' in salt['pillar.get']('haproxy:global', {}) %}
     {{- render_list_of_dictionaries('ssl-default-server-ciphersuites', salt['pillar.get']('haproxy:global:ssl-default-server-ciphersuites')) }}
 {%- endif %}
+{%- if 'ssl-default-bind-sigalgs' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-bind-sigalgs', salt['pillar.get']('haproxy:global:ssl-default-bind-sigalgs')) }}
+{%- endif %}
+{%- if 'ssl-default-server-sigalgs' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-server-sigalgs', salt['pillar.get']('haproxy:global:ssl-default-server-sigalgs')) }}
+{%- endif %}
+{%- if 'ssl-default-bind-curves' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-bind-curves', salt['pillar.get']('haproxy:global:ssl-default-bind-curves')) }}
+{%- endif %}
+{%- if 'ssl-default-server-curves' in salt['pillar.get']('haproxy:global', {}) %}
+    {{- render_list_of_dictionaries('ssl-default-server-curves', salt['pillar.get']('haproxy:global:ssl-default-server-curves')) }}
+{%- endif %}
 {%- if 'extra' in salt['pillar.get']('haproxy:global', {}) %}
   {%- if salt['pillar.get']('haproxy:global:extra', {}) is string %}
     {{ salt['pillar.get']('haproxy:global:extra') }}
