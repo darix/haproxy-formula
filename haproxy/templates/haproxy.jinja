@@ -183,6 +183,24 @@ defaults
   {%- endif %}
 {%- endif %}
 
+{%- if 'peers' in salt['pillar.get']('haproxy', {}) %}
+  {%- for clustername, cluster_settings in salt['pillar.get']('haproxy:peers', {})|dictsort %}
+peers {{ clustername }}
+    {%- if 'peer_list' in cluster_settings %}
+      {%- for peer_name, peer_address in cluster_settings['peer_list']|dictsort %}
+  peer {{ peer_name }} {{ peer_address }}
+      {%- endfor %}
+    {%- else %}
+      {%- for minion_id, mine_value in salt['mine.get'](cluster_settings['peer_mine_target'], cluster_settings['peer_mine_function'], tgt_type='compound')|dictsort %}
+  peer {{ minion_id }} {{ mine_value[0] }}:{{ cluster_settings.get('peer_port', 10000) }}
+      {%- endfor %}
+    {%- endif %}
+    {%- for table_name, table_settings in cluster_settings['tables'].items() %}
+  table {{ table_name }} {{ table_settings }}
+    {%- endfor %}
+  {%- endfor %}
+{%- endif %}
+
 {%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}).items() %}
 defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %} from {{ named_defaults.inherit_defaults }}{%- endif %}
 {%- if 'log' in named_defaults %}
