@@ -183,9 +183,9 @@ defaults
   {%- endif %}
 {%- endif %}
 
-{%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}) %}
+{%- for named_defaults_name, named_defaults in salt['pillar.get']('haproxy:named_defaults', {}).items() %}
 defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %} from {{ named_defaults.inherit_defaults }}{%- endif %}
-{%- if 'mode' in named_defaults %}
+{%- if 'log' in named_defaults %}
     log {{ named_defaults['log'] }}
 {%- endif %}
 {%- if 'mode' in named_defaults %}
@@ -214,6 +214,14 @@ defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %}
 {%- endif %}
 {%- if 'http_reuse' in named_defaults %}
     http-reuse {{ named_defaults['http_reuse'] }}
+{%- endif %}
+{%- if 'defaultserver' in named_defaults %}
+    default-server {{ named_defaults['defaultserver'] }}
+{%- endif %}
+{%- if 'httpchecks' in named_defaults %}
+        {%- for httpcheck in named_defaults.httpchecks %}
+    http-check {{ httpcheck }}
+        {%- endfor %}
 {%- endif %}
 {%- if 'timeouts' in named_defaults %}
   {%- for timeout_type, timeout_value in named_defaults['timeouts'].items() %}
