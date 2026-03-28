@@ -193,7 +193,11 @@ defaults
     {%- set peer_port = cluster_settings.get('peer_port', 10000) %}
     {%- set peer_list = salt['mine.get'](cluster_settings['peer_mine_target'], cluster_settings['peer_mine_function'], tgt_type='compound') %}
 peers {{ clustername }}
-  bind {{ peer_list[grains.id][0] }}:{{ peer_port }}{%- if 'peer_bind_settings' in cluster_settings %} {{ cluster_settings['peer_bind_settings'] }}{%- endif %}
+  bind {{ peer_list[grains.id][0] }}:{{ peer_port }}
+  log {{ cluster_settings.get('log', 'global') }}
+    {%- if 'peer_bind_settings' in cluster_settings %}
+  default-bind   {{ cluster_settings['peer_bind_settings'] }}
+    {%- endif %}
     {%- if 'peer_server_settings' in cluster_settings %}
   default-server {{ cluster_settings['peer_server_settings'] }}
     {%- endif %}
