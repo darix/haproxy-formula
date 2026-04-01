@@ -2,8 +2,12 @@
 
 haproxy.install:
   pkg.installed:
-    - names:
+    - pkgs:
+      {%- if salt['pillar.get']('haproxy:minimum_version', "") != "" %}
+      - {{ haproxy.package }}: '>={{ salt['pillar.get']('haproxy:minimum_version', "") }}'
+      {%- else %}
       - {{ haproxy.package }}
+      {%- endif %}
       - hatop
       - monitoring-plugins-haproxy
 {% if salt['pillar.get']('haproxy:require') %}
