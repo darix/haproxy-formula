@@ -8,8 +8,9 @@ haproxy.install:
       {%- else %}
       - {{ haproxy.package }}
       {%- endif %}
-      - hatop
-      - monitoring-plugins-haproxy
+      {% for package in salt['pillar.get']('haproxy:extra_packages', []) %}
+      - {{ package }}
+      {%- endfor %}
 {% if salt['pillar.get']('haproxy:require') %}
     - require:
 {% for item in salt['pillar.get']('haproxy:require') %}

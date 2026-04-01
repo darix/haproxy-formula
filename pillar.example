@@ -4,6 +4,11 @@
 ---
 
 haproxy:
+  # if you want to force a minimum version
+  # minimum_version: 3.3.6
+  # extra_packages:
+  # - hatop
+  # - monitoring-plugins-haproxy
   maps:
     localhost:
       - 127.0.0.1/32
