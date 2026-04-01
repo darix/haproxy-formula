@@ -190,6 +190,7 @@ defaults
 # peers for syncing sticky tables
 #------------------
   {%- for clustername, cluster_settings in salt['pillar.get']('haproxy:peers', {})|dictsort %}
+    {%- if 'peer_mine_target' in cluster_settings and 'peer_mine_function' in cluster_settings %}
     {%- set peer_port = cluster_settings.get('peer_port', 10000) %}
     {%- set peer_list = salt['mine.get'](cluster_settings['peer_mine_target'], cluster_settings['peer_mine_function'], tgt_type='compound') %}
 peers {{ clustername }}
@@ -208,7 +209,7 @@ peers {{ clustername }}
   table {{ table_name }} {{ table_settings }}
     {%- endfor %}
 
-
+    {%- endif %}
   {%- endfor %}
 {%- endif %}
 
