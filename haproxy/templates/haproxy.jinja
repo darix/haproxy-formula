@@ -182,6 +182,12 @@ defaults
     {%- endfor %}
   {%- endif %}
 {%- endif %}
+{%- if 'uniqueidformat' in salt['pillar.get']('haproxy:defaults', {}) %}
+    unique-id-format {{ salt['pillar.get']('haproxy:defaults:uniqueidformat') }}
+{%- endif %}
+{%- if 'uniqueidheader' in salt['pillar.get']('haproxy:defaults', {}) %}
+    unique-id-header {{ salt['pillar.get']('haproxy:defaults:uniqueidheader') }}
+{%- endif %}
 
 {%- if 'peers' in salt['pillar.get']('haproxy', {}) %}
 
@@ -266,6 +272,12 @@ defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %}
 {%- endif %}
 {%- if 'stats' in named_defaults -%}
     {{ render_list_of_dictionaries('stats', named_defaults['stats']) }}
+{%- endif %}
+{%- if 'uniqueidformat' in named_defaults[' %}
+    unique-id-format {{ named_defaults['uniqueidformat'] }}
+{%- endif %}
+{%- if 'uniqueidheader' in named_defaults[' %}
+    unique-id-header {{ named_defaults['uniqueidheader'] }}
 {%- endif %}
 {%- if 'extra' in named_defaults %}
   {%- if named_defaults.get('extra', {}) is string %}
