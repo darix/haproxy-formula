@@ -273,10 +273,10 @@ defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %}
 {%- if 'stats' in named_defaults -%}
     {{ render_list_of_dictionaries('stats', named_defaults['stats']) }}
 {%- endif %}
-{%- if 'uniqueidformat' in named_defaults[' %}
+{%- if 'uniqueidformat' in named_defaults %}
     unique-id-format {{ named_defaults['uniqueidformat'] }}
 {%- endif %}
-{%- if 'uniqueidheader' in named_defaults[' %}
+{%- if 'uniqueidheader' in named_defaults %}
     unique-id-header {{ named_defaults['uniqueidheader'] }}
 {%- endif %}
 {%- if 'extra' in named_defaults %}
