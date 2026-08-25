@@ -261,6 +261,11 @@ defaults {{ named_defaults_name }}{%- if 'inherit_defaults' in named_defaults %}
     http-check {{ httpcheck }}
         {%- endfor %}
 {%- endif %}
+{%- if 'httprequests' in named_defaults %}
+        {%- for httprequest in named_defaults.httprequests %}
+    http-request {{ httprequest }}
+        {%- endfor %}
+{%- endif %}
 {%- if 'timeouts' in named_defaults %}
   {%- for timeout_type, timeout_value in named_defaults['timeouts'].items() %}
     timeout {{ timeout_type }} {{ timeout_value }}
